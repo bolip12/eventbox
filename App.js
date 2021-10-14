@@ -1,21 +1,59 @@
-import { StatusBar } from 'expo-status-bar';
-import React from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import React, { Component } from 'react';
+import { Provider as PaperProvider, DefaultTheme } from 'react-native-paper';
 
-export default function App() {
-  return (
-    <View style={styles.container}>
-      <Text>Open up App.js to start working on your app!</Text>
-      <StatusBar style="auto" />
-    </View>
-  );
+import store from './app/config/storeApp';
+
+import MemberNav from './app/navigation/MemberNav';
+import LeaderNav from './app/navigation/LeaderNav';
+import FrontNav from './app/navigation/FrontNav';
+import YayasanNav from './app/navigation/YayasanNav';
+
+const theme = {
+  ...DefaultTheme,
+  roundness: 2,
+  colors: {
+    ...DefaultTheme.colors,
+    primary: 'green',
+    accent: '#f1c40f',
+    text: 'green',
+  },
+};
+
+class App extends Component {
+
+  constructor(props) {
+    super(props);
+
+    this.state = store.getState();  
+      store.subscribe(()=>{
+        this.setState(store.getState());
+      });
+
+      this.state = {
+        ...this.state,
+      };
+  }
+
+  render() {
+    if(this.state.tipe == 'member') {
+      return (<PaperProvider theme={theme}>
+                <MemberNav />
+              </PaperProvider>)
+    } else if(this.state.tipe == 'leader') {
+      return (<PaperProvider theme={theme}>
+                <LeaderNav />
+              </PaperProvider>) 
+    } else if(this.state.tipe == 'yayasan') {
+      return (<PaperProvider theme={theme}>
+                <YayasanNav />
+              </PaperProvider>) 
+    } else {
+      return (<PaperProvider theme={theme}>
+                <FrontNav />
+              </PaperProvider>)
+    }
+
+  }
 }
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});
+export default App;
