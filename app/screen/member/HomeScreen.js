@@ -1,9 +1,10 @@
 import React, { Component } from 'react';
-import { View, ScrollView } from 'react-native';
+import { View, ScrollView, Dimensions} from 'react-native';
 import { Appbar, Subheading, Divider, List} from 'react-native-paper';
 
 import styleApp from '../../config/styleApp.js';
 import storeApp from '../../config/storeApp';
+
 
 class HomeScreen extends Component {
 
