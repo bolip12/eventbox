@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { View, ScrollView, Dimensions, Text }  from 'react-native';
 import { Appbar, Title, Subheading, Divider, List, DataTable, TouchableRipple } from 'react-native-paper';
-import { VictoryBar, VictoryChart, VictoryGroup, VictoryLegend, VictoryLine, VictoryTheme } from "victory-native";
+import { VictoryBar, VictoryChart, VictoryGroup, VictoryAxis, VictoryLegend, VictoryLine, VictoryTheme, VictoryLabel } from "victory-native";
 
 import styleApp from '../../config/styleApp.js';
 import storeApp from '../../config/storeApp';
@@ -43,18 +43,21 @@ class HomeScreen extends Component {
         <ScrollView style={ styleApp.ScrollView }>
 
           <View>
-            <VictoryChart theme={VictoryTheme.material}>
-
+            <VictoryChart 
+              theme={VictoryTheme.material} 
+              minDomain={{ y: 0}}
+              //padding={{ top: 20, bottom: 60, left: , right: number }}
+            >
               <VictoryLine
                 style={{
                   data: { stroke: "green" },
-                  parent: { border: "1px solid #ccc"}
+                  parent: { border: "1px solid #ccc"},
                 }}
                 data={[
                   { x: "Jan", y: 2 },
                   { x: "Feb", y: 3 },
                   { x: "Mar", y: 5 },
-                  { x: "Apr", y: 4 },
+                  { x: "Apr", y: 0 },
                   { x: "Mei", y: 6 },
                   { x: "Jun", y: 7 },
                   { x: "Jul", y: 9 },
@@ -63,8 +66,10 @@ class HomeScreen extends Component {
                   { x: "Okt", y: 8 },
                   { x: "Nov", y: 2 },
                   { x: "Des", y: 3 },
+                  
+
                 ]}
-                interpolation="natural"
+                interpolation="catmullRom"
               />
             </VictoryChart>
           </View>

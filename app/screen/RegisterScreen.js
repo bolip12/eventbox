@@ -28,40 +28,29 @@ class LoginScreen extends ValidationComponent {
         password: '',
         passwordHide: true,
         passwordIcon: 'eye',
+        
       };
   }
 
   componentDidMount() {
-    this.defaultValue();
+    
   }
 
-  async defaultValue() {
-
-    let loginEmail = await AsyncStorage.getItem('@loginEmail');
-
-    this.setState({ email:loginEmail });
-
-    let loginPassword = await AsyncStorage.getItem('@loginPassword');
-    this.setState({ password:loginPassword });
-
-  }
-
-  async onLogin() {
+  async onSubmit() {
     this.validate({
       email: {required:true, email: true},
       password: {required:true, minlength:6},
     });
 
     if(this.isFormValid()) {
+      
+      const email = this.state.email;
+      const password = this.state.password;
 
-      await AsyncStorage.setItem('@loginEmail', this.state.email);
-      await AsyncStorage.setItem('@loginPassword', this.state.password);
-
-      const { user, session, error } = await supabase.auth.signIn({
-        email: this.state.email,
-        password: this.state.password,
+      const { user, error } = await supabase.auth.signUp({
+        email: email,
+        password: password,
       })
-      console.log(error)
 
       if(error != null) {
         showMessage({
@@ -72,16 +61,21 @@ class LoginScreen extends ValidationComponent {
 
       } else {
 
-        const { data } = await supabase
+       const { data, error } = await supabase
           .from('user')
-          .select('id, tipe')
-          .eq('email', this.state.email)
-          .single();
+          .insert([{ 
+                    auth_id: user.id,
+                    email: email,
+                    tipe: 'member',
+                    created_at: new Date(),
+                    updated_at: new Date(),
+                  }])
+          
 
-        storeApp.dispatch({
-            type: 'LOGIN',
-            payload: { tipe:data.tipe }
-        });
+       await AsyncStorage.setItem('@loginEmail', email);
+       await AsyncStorage.setItem('@loginPassword', password);       
+
+       this.props.navigation.navigate('LoginScreen');
 
         showMessage({
             message: 'Berhasil Login',
@@ -101,13 +95,13 @@ class LoginScreen extends ValidationComponent {
 
     this.setState({passwordHide: !this.state.passwordHide});
   }
-  
 
   render() {
       return (
         <>
           <Appbar.Header style={ styleApp.Appbar }>
-            <Appbar.Content title="Login" titleStyle={{color:'green'}} />
+            <Appbar.BackAction color='green' onPress={() => this.props.navigation.goBack()} />
+            <Appbar.Content title="Sign Up" titleStyle={{color:'green'}} />
           </Appbar.Header>
 
           <ScrollView style={ styleApp.ScrollView }>
@@ -130,22 +124,12 @@ class LoginScreen extends ValidationComponent {
             />
             {this.isFieldInError('password') && this.getErrorsInField('password').map(errorMessage => <HelperText type="error">{errorMessage}</HelperText>) }
 
-           
           </View>
 
           <Button
               mode="contained"
               icon="login"
-              onPress={() => this.onLogin()}
-              style={styleApp.Button}
-          >
-            Login
-          </Button>
-
-           <Button
-              mode="contained"
-              icon="account"
-              onPress={() => this.props.navigation.navigate('RegisterScreen')}
+              onPress={() => this.onSubmit()}
               style={styleApp.Button}
           >
             Daftar

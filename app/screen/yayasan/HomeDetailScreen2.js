@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { View, ScrollView, Dimensions, Text }  from 'react-native';
 import { Appbar, Title, Subheading, Divider, List, DataTable, TouchableRipple } from 'react-native-paper';
-import { VictoryBar, VictoryChart, VictoryGroup, VictoryLegend, VictoryPie } from "victory-native";
+import { VictoryBar, VictoryChart, VictoryGroup, VictoryLegend, VictoryPie, VictoryContainer } from "victory-native";
 
 import styleApp from '../../config/styleApp.js';
 import storeApp from '../../config/storeApp';
@@ -44,6 +44,8 @@ class HomeScreen extends Component {
                   { x: 3, y: 4 },
                 ]}
                 padding={{ top: 100, bottom: 180, right: 200 }}
+                labels={({ datum }) => ''}
+                
               />
               
             </View>
@@ -55,6 +57,8 @@ class HomeScreen extends Component {
                   { x: 4, y: 5 },
                 ]}
                 padding={{ top: 100, bottom: 180, right: 200 }}
+                labels={({ datum }) => ''}
+                
               />
               
             </View>

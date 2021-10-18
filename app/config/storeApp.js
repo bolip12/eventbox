@@ -2,6 +2,8 @@ import { createStore } from 'redux'
 
 const defaultState = {
   tipe: '',
+
+
 };
 
 //rejuicer
