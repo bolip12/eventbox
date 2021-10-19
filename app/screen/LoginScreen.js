@@ -53,6 +53,10 @@ class LoginScreen extends ValidationComponent {
     });
 
     if(this.isFormValid()) {
+      storeApp.dispatch({
+          type: 'LOADING',
+          payload: { isLoading:true }
+      });
 
       await AsyncStorage.setItem('@loginEmail', this.state.email);
       await AsyncStorage.setItem('@loginPassword', this.state.password);
@@ -90,6 +94,11 @@ class LoginScreen extends ValidationComponent {
         });
 
       }
+
+      storeApp.dispatch({
+          type: 'LOADING',
+          payload: { isLoading:false }
+      });
 
     }
 

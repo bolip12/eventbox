@@ -3,6 +3,7 @@ import { createStore } from 'redux'
 const defaultState = {
   tipe: '',
 
+  isLoading:false,
 
 };
 
@@ -12,6 +13,10 @@ const storeApp = (state = defaultState, action) => {
     case 'LOGIN':
       return {...state,
           tipe: action.payload.tipe,
+        };
+    case 'LOADING':
+      return {...state,
+          isLoading: action.payload.isLoading,
         };
   }
 };
