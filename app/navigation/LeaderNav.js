@@ -16,6 +16,7 @@ import EventDetailScreen from '../screen/leader/EventDetailScreen';
 import EventUserScreen from '../screen/leader/EventUserScreen';
 import EventUpdateScreen from '../screen/leader/EventUpdateScreen';
 import EventInsertScreen from '../screen/leader/EventInsertScreen';
+import EventDetailInsertScreen from '../screen/leader/EventDetailInsertScreen';
 
 import SettingScreen from '../screen/leader/SettingScreen';
 
@@ -65,6 +66,8 @@ class LeaderNav extends Component {
                       <Stack.Screen name="EventUserScreen" component={EventUserScreen} options={{headerShown:false}} />
                       <Stack.Screen name="EventUpdateScreen" component={EventUpdateScreen} options={{headerShown:false}} />
                       <Stack.Screen name="EventInsertScreen" component={EventInsertScreen} options={{headerShown:false}} />
+                      <Stack.Screen name="EventDetailInsertScreen" component={EventDetailInsertScreen} options={{headerShown:false}} />
+                      
                     </Stack.Navigator>
             )}
           </Tab.Screen>

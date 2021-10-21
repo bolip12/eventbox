@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { View, ScrollView, FlatList } from 'react-native';
-import { Appbar, List, IconButton, Divider, Button, Badge } from 'react-native-paper';
+import { Appbar, List, IconButton, Divider, Button, Badge, Caption } from 'react-native-paper';
 
 import styleApp from '../../config/styleApp.js';
 import supabase from '../../config/supabase.js';
@@ -41,10 +41,10 @@ class EventDetailScreen extends Component {
       //query
       let { data, error } = await supabase
           .from('task')
-          .select('id, name, start_date, end_date, budget_plan, budget_used')
+          .select('id, task_status_id, name, start_date, end_date, budget_plan, budget_used')
           .eq('event_id', event_id)
 
-      this.setState({data:data});
+      this.setState({data:data, task_status_id:data[0].task_status_id});
       
       store.dispatch({
           type: 'LOADING',
@@ -58,6 +58,19 @@ class EventDetailScreen extends Component {
         <IconButton icon="pencil" onPress={() => this.props.navigation.navigate('EventUpdateScreen')}/>
         <IconButton icon="account" onPress={() => this.props.navigation.navigate('EventUserScreen')}/>
       </View>
+    )
+  }
+
+  onDesc(item) {
+    return(
+      <View>
+        <Caption>Plan : Rp. {thousandFormat(item.budget_plan)}</Caption>
+        { item.budget_used == 0 ?
+          <Caption>Used : - </Caption>
+          :
+          <Caption>Used : Rp. {thousandFormat(item.budget_used)}</Caption>
+        }
+     </View>
     )
   }
 
@@ -78,8 +91,8 @@ class EventDetailScreen extends Component {
               <View>
                 <List.Item
                   title={item.name}
-                  description={'Rp. '+thousandFormat(item.budget_plan)}
-                  left={props => <Badge style={{ backgroundColor: 'green', margin: 10 }} size={40}>{item.name.charAt(0)}</Badge>}
+                  description={props => this.onDesc(item)}
+                  left={props => <Badge style={{ backgroundColor: 'green', margin:5, marginBottom:25 }} size={40}>{item.name.charAt(0)}</Badge>}
                   right={props => this.onRight(item)}
                 />
                 <Divider />
@@ -90,7 +103,7 @@ class EventDetailScreen extends Component {
         <View style={{ backgroundColor: '#ffffff' }}>
           <Button
             mode="contained"
-            //onPress={() => this.props.navigation.navigate('HomeDetailScreen')}
+            onPress={() => this.props.navigation.navigate('EventDetailInsertScreen', {event_id:this.props.route.params.event_id, task_status_id:this.state.task_status_id})}
             style={styleApp.Button}
             icon="plus"
           >

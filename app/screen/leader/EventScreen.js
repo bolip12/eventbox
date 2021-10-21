@@ -68,7 +68,7 @@ class EventScreen extends Component {
                 <List.Item
                   title={item.name}
                   left={props => <Badge style={{ backgroundColor: 'green', margin: 10 }} size={40}>{item.name.charAt(0)}</Badge>}
-                  right={props => <IconButton icon="pencil" onPress={() => this.props.navigation.navigate('EventDetailScreen')}/>}
+                  right={props => <IconButton icon="pencil"/>}
                   onPress={() => this.props.navigation.navigate('EventDetailScreen', {event_id:item.id})}
                 />
                 <Divider />
