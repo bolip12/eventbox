@@ -69,7 +69,7 @@ class EventScreen extends Component {
                   title={item.name}
                   left={props => <Badge style={{ backgroundColor: 'green', margin: 10 }} size={40}>{item.name.charAt(0)}</Badge>}
                   right={props => <IconButton icon="pencil"/>}
-                  onPress={() => this.props.navigation.navigate('EventDetailScreen', {event_id:item.id})}
+                  onPress={() => this.props.navigation.navigate('EventTabScreen', {event_id:item.id, event_name:item.name})}
                 />
                 <Divider />
               </View>

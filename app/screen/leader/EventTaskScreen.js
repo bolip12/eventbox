@@ -9,7 +9,7 @@ import store from '../../config/storeApp';
 import thousandFormat from '../../comp/thousandFormat.js';
 import clearThousandFormat from '../../comp/clearThousandFormat.js';
 
-class EventDetailScreen extends Component {
+class EventTaskScreen extends Component {
 
   constructor(props) {
     super(props);
@@ -27,7 +27,13 @@ class EventDetailScreen extends Component {
   }
 
   componentDidMount() {
-    this.getData();
+    this._unsubscribe = this.props.navigation.addListener('focus', () => {
+      this.getData();
+    })
+  }
+
+  componentWillUnmount() {
+    this._unsubscribe();
   }
 
   async getData() {
@@ -55,8 +61,8 @@ class EventDetailScreen extends Component {
   onRight(item) {
     return(
       <View style={{ flexDirection: 'row' }}>
-        <IconButton icon="pencil" onPress={() => this.props.navigation.navigate('EventUpdateScreen')}/>
-        <IconButton icon="account" onPress={() => this.props.navigation.navigate('EventUserScreen')}/>
+        <IconButton icon="pencil" onPress={() => this.props.navigation.navigate('EventTaskUpdateScreen', {id:item.id, event_id:this.props.route.params.event_id, event_name:this.props.route.params.event_name})}/>
+        <IconButton icon="account" onPress={() => this.props.navigation.navigate('EventTaskMemberScreen' , {id:item.id, event_id:this.props.route.params.event_id, event_name:this.props.route.params.event_name})}/>
       </View>
     )
   }
@@ -77,11 +83,6 @@ class EventDetailScreen extends Component {
   render() {
     return (
       <>
-        <Appbar.Header style={{backgroundColor:'white'}}>
-          <Appbar.BackAction color='green' onPress={() => this.props.navigation.goBack()} />
-          <Appbar.Content title="Event Coding" titleStyle={{color:'green'}} />
-        </Appbar.Header>
-
         <FlatList
             keyboardShouldPersistTaps="handled"
             data={this.state.data}
@@ -103,7 +104,7 @@ class EventDetailScreen extends Component {
         <View style={{ backgroundColor: '#ffffff' }}>
           <Button
             mode="contained"
-            onPress={() => this.props.navigation.navigate('EventDetailInsertScreen', {event_id:this.props.route.params.event_id, task_status_id:this.state.task_status_id})}
+            onPress={() => this.props.navigation.navigate('EventTaskInsertScreen', {event_id:this.props.route.params.event_id, task_status_id:this.state.task_status_id, event_name:this.props.route.params.event_name})}
             style={styleApp.Button}
             icon="plus"
           >
@@ -116,4 +117,4 @@ class EventDetailScreen extends Component {
   }
 }
 
-export default EventDetailScreen;
+export default EventTaskScreen;

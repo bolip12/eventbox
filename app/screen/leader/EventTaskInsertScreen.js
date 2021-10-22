@@ -13,7 +13,7 @@ import thousandFormat from '../../comp/thousandFormat.js';
 import clearThousandFormat from '../../comp/clearThousandFormat.js';
 
 
-class EventInsertScreen extends ValidationComponent {
+class EventTaskInsertScreen extends ValidationComponent {
 
   constructor(props) {
     super(props);
@@ -75,7 +75,7 @@ class EventInsertScreen extends ValidationComponent {
 
       } else {
 
-      this.props.navigation.navigate('EventDetailScreen');
+      this.props.navigation.navigate('EventTabScreen', {event_id:this.props.route.params.event_id, event_name:this.props.route.params.event_name});
 
         showMessage({
             message: 'Data berhasil disimpan',
@@ -97,7 +97,7 @@ class EventInsertScreen extends ValidationComponent {
       <>
         <Appbar.Header style={{backgroundColor:'white'}}>
           <Appbar.BackAction color='green' onPress={() => this.props.navigation.goBack()} />
-          <Appbar.Content title="Insert" titleStyle={{color:'green'}} />
+          <Appbar.Content title="Insert Task" titleStyle={{color:'green'}} />
         </Appbar.Header>
 
         <ScrollView style={ styleApp.ScrollView }>
@@ -165,4 +165,4 @@ class EventInsertScreen extends ValidationComponent {
   }
 }
 
-export default EventInsertScreen;
+export default EventTaskInsertScreen;

@@ -12,11 +12,15 @@ import HomeDetailScreen from '../screen/leader/HomeDetailScreen';
 import SetTugasScreen from '../screen/leader/SetTugasScreen';
 
 import EventScreen from '../screen/leader/EventScreen';
-import EventDetailScreen from '../screen/leader/EventDetailScreen';
-import EventUserScreen from '../screen/leader/EventUserScreen';
 import EventUpdateScreen from '../screen/leader/EventUpdateScreen';
 import EventInsertScreen from '../screen/leader/EventInsertScreen';
-import EventDetailInsertScreen from '../screen/leader/EventDetailInsertScreen';
+import EventTabScreen from '../screen/leader/EventTabScreen';
+import EventTaskScreen from '../screen/leader/EventTaskScreen';
+import EventTaskInsertScreen from '../screen/leader/EventTaskInsertScreen';
+import EventTaskUpdateScreen from '../screen/leader/EventTaskUpdateScreen';
+import EventMemberScreen from '../screen/leader/EventMemberScreen';
+import EventMemberInsertScreen from '../screen/leader/EventMemberInsertScreen';
+import EventTaskMemberScreen from '../screen/leader/EventTaskMemberScreen';
 
 import SettingScreen from '../screen/leader/SettingScreen';
 
@@ -62,12 +66,15 @@ class LeaderNav extends Component {
           >
             {() => (<Stack.Navigator initialRouteName="Event">
                       <Stack.Screen name="EventScreen" component={EventScreen} options={{headerShown:false}} />
-                      <Stack.Screen name="EventDetailScreen" component={EventDetailScreen} options={{headerShown:false}} />
-                      <Stack.Screen name="EventUserScreen" component={EventUserScreen} options={{headerShown:false}} />
                       <Stack.Screen name="EventUpdateScreen" component={EventUpdateScreen} options={{headerShown:false}} />
                       <Stack.Screen name="EventInsertScreen" component={EventInsertScreen} options={{headerShown:false}} />
-                      <Stack.Screen name="EventDetailInsertScreen" component={EventDetailInsertScreen} options={{headerShown:false}} />
-                      
+                      <Stack.Screen name="EventTabScreen" component={EventTabScreen} options={{headerShown:false}} />
+                      <Stack.Screen name="EventTaskScreen" component={EventTaskScreen} options={{headerShown:false}} />
+                      <Stack.Screen name="EventTaskInsertScreen" component={EventTaskInsertScreen} options={{headerShown:false}} />
+                      <Stack.Screen name="EventTaskUpdateScreen" component={EventTaskUpdateScreen} options={{headerShown:false}} />
+                      <Stack.Screen name="EventMemberScreen" component={EventMemberScreen} options={{headerShown:false}} />
+                      <Stack.Screen name="EventMemberInsertScreen" component={EventMemberInsertScreen} options={{headerShown:false}} />
+                      <Stack.Screen name="EventTaskMemberScreen" component={EventTaskMemberScreen} options={{headerShown:false}} />
                     </Stack.Navigator>
             )}
           </Tab.Screen>
