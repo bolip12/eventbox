@@ -76,6 +76,10 @@ class EventTaskUpdateScreen extends ValidationComponent {
     });
 
     if(this.isFormValid()) {
+      store.dispatch({
+        type: 'LOADING',
+        payload: { isLoading:true }
+      });
       
       let currDate = new Date();
       let id = this.props.route.params.id;
@@ -109,6 +113,11 @@ class EventTaskUpdateScreen extends ValidationComponent {
             icon: 'success',
         });
       }
+
+      store.dispatch({
+        type: 'LOADING',
+        payload: { isLoading:false }
+      });
 
     }
   }

@@ -30,6 +30,7 @@ class EventMemberInsertScreen extends ValidationComponent {
   }
 
   componentDidMount() {
+
     this.getData();
   }
 
@@ -77,6 +78,7 @@ class EventMemberInsertScreen extends ValidationComponent {
 
     let list_new_member = this.state.list_new_member;
     let event_id = this.props.route.params.event_id;
+    let position_id = this.props.route.params.position_id;
 
     list_new_member.map(async(row) => {
 
@@ -84,10 +86,10 @@ class EventMemberInsertScreen extends ValidationComponent {
         .from('event_member')
         .insert([{ 
                   event_id: event_id,
+                  event_position_id: position_id,
                   member_id: row,
                   status: true,
                 }])
-        console.log(insert_event_member, error_event_member)
 
       if(error_event_member != null) {
         showMessage({
@@ -98,7 +100,7 @@ class EventMemberInsertScreen extends ValidationComponent {
 
       } else {
 
-      this.props.navigation.navigate('EventTabScreen', {event_id:this.props.route.params.event_id, event_name:this.props.route.params.event_name});
+      this.props.navigation.navigate('EventMemberScreen', {event_id:this.props.route.params.event_id, position_id:this.props.route.params.position_id});
 
         showMessage({
             message: 'Data berhasil disimpan',

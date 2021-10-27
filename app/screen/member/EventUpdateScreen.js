@@ -1,34 +1,69 @@
 import React, { Component } from 'react';
 import { View,ScrollView } from 'react-native';
-import { Appbar, TextInput, Button, Divider, HelperText } from 'react-native-paper';
+import { Appbar, TextInput, Button, Divider} from 'react-native-paper';
 import ValidationComponent from 'react-native-form-validator';
 import { showMessage } from "react-native-flash-message";
 
 import supabase from '../../config/supabase';
-import storeApp from '../../config/storeApp';
+import store from '../../config/storeApp';
 
 import styleApp from '../../config/styleApp.js';
 import DateTimeInput from '../../comp/dateTimeInput.js';
 import thousandFormat from '../../comp/thousandFormat.js';
 import clearThousandFormat from '../../comp/clearThousandFormat.js';
 
-
-class EventInsertScreen extends ValidationComponent {
+class EventUpdateScreen extends ValidationComponent {
 
   constructor(props) {
     super(props);
 
-     this.state = {
+    //redux variable
+      this.state = store.getState();
+      store.subscribe(()=>{
+        this.setState(store.getState());
+      });
+
+      this.state = {
         ...this.state,
 
-        name: '',
-        start_date:new Date(),
+        start_date: new Date(),
         end_date: new Date(),
-        budget: '',
-        
+
     }
+
+    this.event_id = this.props.route.params.event_id;
   }
 
+  componentDidMount() {
+     this.getData();
+  }
+
+  async getData() {
+      store.dispatch({
+          type: 'LOADING',
+          payload: { isLoading:true }
+      });
+
+      //query
+      let { data, error } = await supabase
+          .from('event')
+          .select('id, name, start_date, end_date, budget, description')
+          .eq('id', this.event_id)
+          .single();
+
+      this.setState({
+        name:data.name,
+        start_date:data.start_date,
+        end_date:data.end_date,
+        budget:data.budget,
+        description:data.description,
+      });
+      
+      store.dispatch({
+          type: 'LOADING',
+          payload: { isLoading:false }
+      });
+  }
 
   async onSubmit() {
     this.validate({
@@ -39,23 +74,29 @@ class EventInsertScreen extends ValidationComponent {
     });
 
     if(this.isFormValid()) {
-
+      store.dispatch({
+        type: 'LOADING',
+        payload: { isLoading:true }
+      });
+      
       let currDate = new Date();
 
-      let { data, error } = await supabase
+      let { data:update_event, error:error_event } = await supabase
           .from('event')
-          .insert([{ 
+          .update([{ 
                     name: this.state.name,
                     budget: clearThousandFormat(this.state.budget),
                     start_date: this.state.start_date,
                     end_date: this.state.end_date,
-                    created_at: currDate,
+                    description: this.state.description,
                     updated_at: currDate,
+                    updated_by: this.state.uid,
                   }])
+          .eq('id', this.event_id);
 
-      if(error != null) {
+      if(error_event != null) {
         showMessage({
-            message: error.message,
+            message: error_event.message,
             type: 'danger',
             icon: 'danger',
         });
@@ -71,6 +112,11 @@ class EventInsertScreen extends ValidationComponent {
         });
       }
 
+      store.dispatch({
+        type: 'LOADING',
+        payload: { isLoading:false }
+      });
+
     }
   }
 
@@ -84,12 +130,12 @@ class EventInsertScreen extends ValidationComponent {
       <>
         <Appbar.Header style={{backgroundColor:'white'}}>
           <Appbar.BackAction color='green' onPress={() => this.props.navigation.goBack()} />
-          <Appbar.Content title="Insert Event" titleStyle={{color:'green'}} />
+          <Appbar.Content title="Ubah Event" titleStyle={{color:'green'}} />
         </Appbar.Header>
 
         <ScrollView style={ styleApp.ScrollView }>
 
-          <TextInput
+           <TextInput
             label="Name"
             value={this.state.name}
             onChangeText={text => this.setState({name: text})}
@@ -106,9 +152,17 @@ class EventInsertScreen extends ValidationComponent {
           />
           {this.isFieldInError('budget') && this.getErrorsInField('budget').map(errorMessage => <HelperText type="error">{errorMessage}</HelperText>) }
 
-           <DateTimeInput
+          <TextInput
+            label="Description"
+            value={this.state.description}
+            onChangeText={text => this.setState({description: text})}
+            multiline={true}
+            style={styleApp.TextInput}
+          />
+
+          <DateTimeInput
             title="Start Date"
-            value={this.state.start_date}
+            value={new Date(this.state.start_date)}
             mode="date"
             minDate={minDate}
             maxDate={maxDate}
@@ -119,7 +173,7 @@ class EventInsertScreen extends ValidationComponent {
 
           <DateTimeInput
             title="End Date"
-            value={this.state.end_date}
+            value={new Date(this.state.end_date)}
             mode="date"
             minDate={minDate}
             maxDate={maxDate}
@@ -130,18 +184,20 @@ class EventInsertScreen extends ValidationComponent {
 
         </ScrollView>
 
-         <Button
-              mode="contained"
-              icon="check"
-              onPress={() => this.onSubmit()}
-              style={styleApp.Button}
+        <View style={{ backgroundColor: '#ffffff' }}>
+          <Button
+            mode="contained"
+            onPress={() => this.onSubmit() }
+            style={styleApp.Button}
+            icon="plus"
           >
             Simpan
           </Button>
+        </View>
 
       </>
     );
   }
 }
 
-export default EventInsertScreen;
+export default EventUpdateScreen;

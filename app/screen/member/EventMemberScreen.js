@@ -25,6 +25,11 @@ class EventMemberScreen extends Component {
         data: [],
       };
 
+      this.event_id = this.props.route.params.event_id;
+      this.event_name = this.props.route.params.event_name;
+      this.position_id = this.props.route.params.position_id;
+      this.position_name = this.props.route.params.position_name;
+
   }
 
   componentDidMount() {
@@ -44,13 +49,11 @@ class EventMemberScreen extends Component {
           payload: { isLoading:true }
       });
 
-      let event_id = this.props.route.params.event_id;
-
       //query
       let { data, error } = await supabase
           .from('event_member')
           .select('id, member_id, member(name)')
-          .eq('event_id', event_id)
+          .eq('event_position_id', this.position_id)
       
       let list_event_member = [];
       data.map(row => {
@@ -118,6 +121,10 @@ class EventMemberScreen extends Component {
   render() {
     return (
       <>
+        <Appbar.Header style={{backgroundColor:'white'}}>
+          <Appbar.BackAction color='green' onPress={() => this.props.navigation.goBack()} />
+          <Appbar.Content title={this.position_name} subtitle={this.event_name} titleStyle={{color:'green'}} subtitleStyle={{ color:'green' }} />
+        </Appbar.Header>
 
         <FlatList
             keyboardShouldPersistTaps="handled"
@@ -139,7 +146,7 @@ class EventMemberScreen extends Component {
         <View style={{ backgroundColor: '#ffffff' }}>
           <Button
             mode="contained"
-            onPress={() => this.props.navigation.navigate('EventMemberInsertScreen', {list_event_member:this.state.list_event_member, event_id:this.props.route.params.event_id, event_name:this.props.route.params.event_name})}
+            onPress={() => this.props.navigation.navigate('EventMemberInsertScreen', {list_event_member:this.state.list_event_member, event_id:this.props.route.params.event_id, position_id:this.props.route.params.position_id})}
             style={styleApp.Button}
             icon="plus"
           >

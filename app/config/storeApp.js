@@ -1,7 +1,9 @@
 import { createStore } from 'redux'
 
 const defaultState = {
-  tipe: '',
+  isLogin: false,
+  uid: '',
+  member_id: '',
 
   isLoading:false,
 
@@ -12,7 +14,9 @@ const storeApp = (state = defaultState, action) => {
   switch(action.type) {
     case 'LOGIN':
       return {...state,
-          tipe: action.payload.tipe,
+          isLogin: action.payload.isLogin,
+          uid: action.payload.uid,
+          member_id: action.payload.member_id,
         };
     case 'LOADING':
       return {...state,

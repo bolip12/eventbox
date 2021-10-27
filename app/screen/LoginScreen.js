@@ -65,7 +65,6 @@ class LoginScreen extends ValidationComponent {
         email: this.state.email,
         password: this.state.password,
       })
-      console.log(error)
 
       if(error != null) {
         showMessage({
@@ -76,15 +75,21 @@ class LoginScreen extends ValidationComponent {
 
       } else {
 
-        const { data } = await supabase
+        const { data:data_user, error:error_user } = await supabase
           .from('user')
           .select('id, tipe')
-          .eq('email', this.state.email)
+          .eq('auth_id', user.id)
+          .single();
+
+        const { data, error } = await supabase
+          .from('member')
+          .select('id')
+          .eq('uid', data_user.id)
           .single();
 
         storeApp.dispatch({
             type: 'LOGIN',
-            payload: { tipe:data.tipe }
+            payload: { isLogin: true, uid:data_user.id, member_id:data.id}
         });
 
         showMessage({

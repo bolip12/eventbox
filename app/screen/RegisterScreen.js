@@ -6,7 +6,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { showMessage } from "react-native-flash-message";
 
 import supabase from '../config/supabase';
-import storeApp from '../config/storeApp';
+import store from '../config/storeApp';
 import styleApp from '../config/styleApp';
 
 
@@ -16,9 +16,9 @@ class LoginScreen extends ValidationComponent {
       super(props);
 
       //redux variable
-      this.state = storeApp.getState();
-      storeApp.subscribe(()=>{
-        this.setState(storeApp.getState());
+      this.state = store.getState();
+      store.subscribe(()=>{
+        this.setState(store.getState());
       });
 
       //default state value
@@ -43,6 +43,10 @@ class LoginScreen extends ValidationComponent {
     });
 
     if(this.isFormValid()) {
+      store.dispatch({
+            type: 'LOADING',
+            payload: { isLoading:true }
+        });
       
       const email = this.state.email;
       const password = this.state.password;
@@ -61,7 +65,7 @@ class LoginScreen extends ValidationComponent {
 
       } else {
 
-       const { data, error } = await supabase
+       const { data, error:error_user} = await supabase
           .from('user')
           .insert([{ 
                     auth_id: user.id,
@@ -70,7 +74,6 @@ class LoginScreen extends ValidationComponent {
                     created_at: new Date(),
                     updated_at: new Date(),
                   }])
-          
 
        await AsyncStorage.setItem('@loginEmail', email);
        await AsyncStorage.setItem('@loginPassword', password);       
@@ -84,6 +87,11 @@ class LoginScreen extends ValidationComponent {
         });
 
       }
+
+      store.dispatch({
+            type: 'LOADING',
+            payload: { isLoading:true }
+        });
 
     }
 

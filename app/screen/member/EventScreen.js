@@ -34,21 +34,21 @@ class EventScreen extends Component {
   }
 
   async getData() {
-      store.dispatch({
-          type: 'LOADING',
-          payload: { isLoading:true }
-      });
+    store.dispatch({
+        type: 'LOADING',
+        payload: { isLoading:true }
+    });
 
-      let { data, error } = await supabase
-          .from('event')
-          .select('id, name, budget, start_date, end_date')
+    let { data, error } = await supabase
+        .from('event')
+        .select('id, name, budget, start_date, end_date')
 
-      this.setState({data:data});
+    this.setState({data:data});
 
-      store.dispatch({
-          type: 'LOADING',
-          payload: { isLoading:false }
-      });
+    store.dispatch({
+        type: 'LOADING',
+        payload: { isLoading:false }
+    });
   }
 
   render() {
