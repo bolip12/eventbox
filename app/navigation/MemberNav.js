@@ -26,6 +26,10 @@ import EventPosInsertScreen from '../screen/member/EventPosInsertScreen';
 import EventPosUpdateScreen from '../screen/member/EventPosUpdateScreen';
 import EventImageScreen from '../screen/member/EventImageScreen';
 
+import EventMonitorScreen from '../screen/member/EventMonitorScreen';
+import EventMonitorTeamScreen from '../screen/member/EventMonitorTeamScreen';
+import EventMonitorMeScreen from '../screen/member/EventMonitorMeScreen';
+
 import SettingScreen from '../screen/member/SettingScreen';
 
 class LeaderNav extends Component {
@@ -54,7 +58,9 @@ class LeaderNav extends Component {
             {() => (<Stack.Navigator initialRouteName="Home">
                       <Stack.Screen name="HomeScreen" component={HomeScreen} options={{headerShown:false}} />
                       <Stack.Screen name="HomeDetailScreen" component={HomeDetailScreen} options={{headerShown:false}} />
-                      
+                      <Stack.Screen name="EventMonitorScreen" component={EventMonitorScreen} options={{headerShown:false}} />
+                      <Stack.Screen name="EventMonitorTeamScreen" component={EventMonitorTeamScreen} options={{headerShown:false}} />
+                      <Stack.Screen name="EventMonitorMeScreen" component={EventMonitorMeScreen} options={{headerShown:false}} />
                     </Stack.Navigator>
             )}
           </Tab.Screen>
@@ -83,6 +89,8 @@ class LeaderNav extends Component {
                       <Stack.Screen name="EventPosInsertScreen" component={EventPosInsertScreen} options={{headerShown:false}} />
                       <Stack.Screen name="EventPosUpdateScreen" component={EventPosUpdateScreen} options={{headerShown:false}} />
                       <Stack.Screen name="EventImageScreen" component={EventImageScreen} options={{headerShown:false}} />
+                      
+                      
                       
                     </Stack.Navigator>
             )}

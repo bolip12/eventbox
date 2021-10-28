@@ -157,19 +157,24 @@ class BuktiBayarScreen extends ValidationComponent {
   }
 
   async onDelete() {
+
     store.dispatch({
         type: 'LOADING',
         payload: { isLoading:true }
     });
 
-      //ambil nama file
-      let fileName = this.state.cover;
+    //ambil nama file
+    let cover = this.state.cover;
+    let coverData = cover.split('/');
+    let coverName = coverData[(coverData.length-1)];
+    let coverNameData = coverName.split('?');
+    let coverNamePure = coverNameData[0];
 
       //hapus
       const { data, error } = await supabase
                               .storage
                               .from('eventbanner')
-                              .remove(['public/'+fileName]);
+                              .remove(['public/'+coverNamePure]);
 
       if(error != null) {
         showMessage({

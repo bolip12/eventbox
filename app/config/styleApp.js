@@ -44,7 +44,9 @@ export default StyleSheet.create({
     margin: 5,
     height:35
   },
- 
+  ChipTextSelected: {
+    color: 'white',
+  },
   Caption: {
     fontSize: 14,
   },

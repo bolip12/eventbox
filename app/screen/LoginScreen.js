@@ -77,7 +77,7 @@ class LoginScreen extends ValidationComponent {
 
         const { data:data_user, error:error_user } = await supabase
           .from('user')
-          .select('id, tipe')
+          .select('id')
           .eq('auth_id', user.id)
           .single();
 

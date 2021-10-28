@@ -39,47 +39,35 @@ class EventPositionScreen extends Component {
   }
 
   async getData() {
-      store.dispatch({
-          type: 'LOADING',
-          payload: { isLoading:true }
-      });
+    store.dispatch({
+        type: 'LOADING',
+        payload: { isLoading:true }
+    });
 
-      let event_id = this.props.route.params.event_id;
+    let event_id = this.props.route.params.event_id;
+    let seq = 1;
+    //query
+    let { data, error, count } = await supabase
+        .from('event_position')
+        .select('id, name, seq', {count:'exact'})
+        .eq('event_id', event_id)
+        .order('seq', { ascending: true })
     
-      //query
-      let { data, error } = await supabase
-          .from('event_member')
-          .select('*, member:member_id(name)')
-          .eq('event_id', event_id)
-      
-      let list_event_member = [];
-      data.map(row => {
-        list_event_member.push(row.member_id);
-      })
+    seq = count + 1;
 
-      this.setState({data:data, list_event_member:list_event_member});
-      
-      store.dispatch({
-          type: 'LOADING',
-          payload: { isLoading:false }
-      });
+    this.setState({data:data, seq:seq});
+    
+    store.dispatch({
+        type: 'LOADING',
+        payload: { isLoading:false }
+    });
   }
 
   onRight(item) {
     return(
       <View style={{ flexDirection: 'row' }}>
         <IconButton icon="pencil" onPress={() => this.props.navigation.navigate('EventPosUpdateScreen', {position_id:item.id, event_id:this.props.route.params.event_id, event_name:this.props.route.params.event_name})}/>
-        {/*<IconButton icon="account" onPress={() => this.props.navigation.navigate('EventMemberScreen', {position_id:item.id, event_id:this.props.route.params.event_id, event_name:this.props.route.params.event_name, position_name:item.name})} />*/}
-      </View>
-    )
-  }
-
-  onDesc(item) {
-    return(
-      <View>
-        <Caption style={styleApp.Caption}>{item.event_position_name}</Caption>
-        {/*<Caption>{item.event_position_name}</Caption>*/}
-
+        <IconButton icon="account" onPress={() => this.props.navigation.navigate('EventMemberScreen', {position_id:item.id, event_id:this.props.route.params.event_id, event_name:this.props.route.params.event_name, position_name:item.name})} />
       </View>
     )
   }
@@ -87,6 +75,7 @@ class EventPositionScreen extends Component {
   render() {
     return (
       <>
+
         <FlatList
             keyboardShouldPersistTaps="handled"
             data={this.state.data}
@@ -95,9 +84,8 @@ class EventPositionScreen extends Component {
             renderItem={({ item }) => (
               <View>
                 <List.Item
-                  title={item.member.name}
-                  description={() => this.onDesc(item)}
-                  left={props => <Badge style={{ backgroundColor: 'green', margin:8 }} size={40}>{item.member.name.charAt(0)}</Badge>}
+                  title={item.name}
+                  left={props => <Badge style={{ backgroundColor: 'green', margin:8 }} size={40}>{item.name.charAt(0)}</Badge>}
                   right={props => this.onRight(item)}
                 />
                 <Divider />
@@ -108,7 +96,7 @@ class EventPositionScreen extends Component {
         <View style={{ backgroundColor: '#ffffff' }}>
           <Button
             mode="contained"
-            onPress={() => this.props.navigation.navigate('EventPosInsertScreen', { event_id:this.props.route.params.event_id, event_name:this.props.route.params.event_name, list_event_member:this.state.list_event_member })}
+            onPress={() => this.props.navigation.navigate('EventPosInsertScreen', { event_id:this.props.route.params.event_id, event_name:this.props.route.params.event_name, seq:this.state.seq })}
             style={styleApp.Button}
             icon="plus"
           >

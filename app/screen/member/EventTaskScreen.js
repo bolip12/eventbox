@@ -47,10 +47,10 @@ class EventTaskScreen extends Component {
       //query
       let { data, error } = await supabase
           .from('task')
-          .select('id, task_status_id, name, start_date, end_date, budget_plan, budget_used')
+          .select('id, name, start_date, end_date, budget_plan, budget_used')
           .eq('event_id', event_id)
 
-      this.setState({data:data/*, task_status_id:data[0].task_status_id*/});
+      this.setState({data:data});
       
       store.dispatch({
           type: 'LOADING',

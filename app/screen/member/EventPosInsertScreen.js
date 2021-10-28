@@ -13,6 +13,7 @@ import clearThousandFormat from '../../comp/clearThousandFormat.js';
 import DateTimeInput from '../../comp/dateTimeInput.js';
 import dateFilterFormat from '../../comp/dateFilterFormat.js';
 import dateFormat from '../../comp/dateFormat.js';
+import PickerInput from '../../comp/pickerInput.js';
 
 class EventPosInsertScreen extends ValidationComponent {
 
@@ -27,22 +28,111 @@ class EventPosInsertScreen extends ValidationComponent {
       this.state = {
         ...this.state,
 
-        name: '',
-        can_manage: false,
-        seq: this.props.route.params.seq,
+        memberList: [],
+        member_id: '',
+        member: '',
         
-      };
+        parentList: [],
+        parent_id: '',
+        parent: '',
+
+        position_name:'',
+        can_manage: false,
+
+        selected: false,
+      }
+
 
   }
 
   componentDidMount() {
+    console.log(this.props.route.params.list_event_member)
+    this.getDataParent();
+    this.getDataMember();
+
+  }
+
+  async getDataMember() {
+    store.dispatch({
+        type: 'LOADING',
+        payload: { isLoading:true }
+    });
+    
+    let event_id = this.props.route.params.event_id;
+    let list_event_member = this.props.route.params.list_event_member;
+
+    let { data, error } = await supabase
+          .from('member')
+          .select('id, name')
+          //.eq('event_id', event_id)
+          
+
+    let memberList = [];
+
+    data.map(member => {
+
+      let exist = false;
+      list_event_member.map(member_id => {
+        if(member.id === member_id) {
+          exist = true;
+        }
+      })
+
+      if(!exist) {
+        memberList.push({value:member.id, label:member.name})
+      }
+    })
+
+   /* data.map(doc => {
+      memberList.push({
+        value: doc.id,
+        label: doc.name,
+      });
+    });*/
+
+    //result
+    this.setState({memberList:memberList});
+
+    store.dispatch({
+        type: 'LOADING',
+        payload: { isLoading:false }
+    });
+  }
+
+  async getDataParent() {
+    store.dispatch({
+        type: 'LOADING',
+        payload: { isLoading:true }
+    });
+    
+    let event_id = this.props.route.params.event_id;
+
+    let { data:data_parent, error:erorr_parent } = await supabase
+          .from('event_member')
+          .select('id, member(id, name)')
+          .eq('event_id', event_id)
+
+    let parentList = [];
+    data_parent.map(doc => {
+      parentList.push({
+        value: doc.member.id,
+        label: doc.member.name,
+      });
+    });
+
+    //result
+    this.setState({parentList:parentList});
+
+    store.dispatch({
+        type: 'LOADING',
+        payload: { isLoading:false }
+    });
   }
 
 
   async onSubmit() {
     this.validate({
-      name: {required:true},
-      seq: {required:true},
+      position_name: {required:true},
     });
 
     if(this.isFormValid()) {
@@ -50,20 +140,22 @@ class EventPosInsertScreen extends ValidationComponent {
       let currDate = new Date();
       let event_id = this.props.route.params.event_id;
 
-      let { data, error } = await supabase
-          .from('event_position')
+      let { data:insert_event_member, error: error_event_member} = await supabase
+          .from('event_member')
           .insert([{ 
                     event_id: event_id,
-                    name: this.state.name,
-                    seq: this.state.seq,
+                    member_id: this.state.member_id,
+                    member_pid: this.state.parent_id,
                     can_manage:this.state.can_manage,
-                    created_at: currDate,
-                    created_by: this.state.uid,
+                    status:true,
+                    event_position_name: this.state.position_name,
                   }])
+          console.log(error_event_member)
 
-      if(error != null) {
+
+      if(error_event_member != null) {
         showMessage({
-            message: error.message,
+            message: error_event_member.message,
             type: 'danger',
             icon: 'danger',
         });
@@ -96,24 +188,31 @@ class EventPosInsertScreen extends ValidationComponent {
 
         <ScrollView style={ styleApp.ScrollView }>
 
-          <TextInput
-            label="Name"
-            value={this.state.name}
-            onChangeText={text => this.setState({name: text})}
-            style={styleApp.TextInput}
+          <PickerInput
+            title="Parent"
+            options={this.state.parentList}
+            value={this.state.parent_id}
+            label={this.state.parent}
+            onChangePickerValue={value => this.setState({parent_id: value})}
+            onChangePickerLabel={label => this.setState({parent: label})}
           />
-          {this.isFieldInError('name') && this.getErrorsInField('name').map(errorMessage => <HelperText type="error">{errorMessage}</HelperText>) }
 
+          <PickerInput
+              title="Member"
+              options={this.state.memberList}
+              value={this.state.member_id}
+              label={this.state.member}
+              onChangePickerValue={value => this.setState({member_id: value})}
+              onChangePickerLabel={label => this.setState({member: label})}
+          />
+          
           <TextInput
-            label="Seq"
-            value={thousandFormat(this.state.seq)}
-            disabled
-            onChangeText={text => this.setState({seq: text})}
-            keyboardType={"numeric"}
+            label="Position Name"
+            value={this.state.position_name}
+            onChangeText={text => this.setState({position_name: text})}
             style={styleApp.TextInput}
           />
-          <Divider style={{ backgroundColor: 'green', marginHorizontal:10 }}  />
-          {this.isFieldInError('seq') && this.getErrorsInField('seq').map(errorMessage => <HelperText type="error">{errorMessage}</HelperText>) }
+          {this.isFieldInError('position_name') && this.getErrorsInField('position_name').map(errorMessage => <HelperText type="error">{errorMessage}</HelperText>) }
 
           <List.Item
             title="Can Manage"
@@ -121,7 +220,7 @@ class EventPosInsertScreen extends ValidationComponent {
             onPress={() => this.onChecked()}
           />
           <Divider style={{ backgroundColor: 'green', marginHorizontal:10 }}  />
-          
+
         </ScrollView>
 
         <View style={{ backgroundColor: '#ffffff' }}>

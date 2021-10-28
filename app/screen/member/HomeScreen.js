@@ -45,7 +45,7 @@ class HomeScreen extends Component {
 
      let { data, error } = await supabase
         .from('event_member')
-        .select('*, event:event_id(name, description, cover), event_position:event_position_id(can_manage)')
+        .select('*, event:event_id(name, description, cover)')
         .eq('member_id', this.state.member_id)
 
       this.setState({
@@ -81,9 +81,12 @@ class HomeScreen extends Component {
             style={styleApp.FlatList}
             renderItem={({ item }) => (
               <View>
-                <Card style={{ margin:10 }}>
+                <Card style={{ margin:10 }} onPress={() =>  this.props.navigation.navigate('EventMonitorScreen', { event_id:item.event_id, event_name:item.event.name, can_manage:item.can_manage })}>
                   { item.event.cover != null &&
-                  <Card.Cover source={{ uri: item.event.cover }} style={{ resizeMode: "cover", height: 140, width: 'auto' }} />
+                  <Card.Cover 
+                    source={{ uri: item.event.cover }} 
+                    style={{ resizeMode: "cover", height: 140, width: 'auto' }} 
+                  />
                   }
                   <Card.Content>
                     <Title>{item.event.name}</Title>
@@ -92,7 +95,7 @@ class HomeScreen extends Component {
 
                   <Card.Actions style={{ marginTop:5, marginLeft:'auto' }}>
 
-                    { item.event_position.can_manage == true &&
+                    { item.can_manage == true &&
                       <Button 
                         mode="outlined" 
                         onPress={() => this.props.navigation.navigate('EventTab', { screen: 'EventTabScreen', params: { event_id: item.event_id, event_name: item.event.name }})} 

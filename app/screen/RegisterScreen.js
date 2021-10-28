@@ -26,6 +26,8 @@ class LoginScreen extends ValidationComponent {
         ...this.state,
         email: '',
         password: '',
+        name: '',
+        phone: '',
         passwordHide: true,
         passwordIcon: 'eye',
         
@@ -40,6 +42,8 @@ class LoginScreen extends ValidationComponent {
     this.validate({
       email: {required:true, email: true},
       password: {required:true, minlength:6},
+      name: {required:true},
+      phone: {required:true, numeric:true, minlength:10},
     });
 
     if(this.isFormValid()) {
@@ -50,6 +54,8 @@ class LoginScreen extends ValidationComponent {
       
       const email = this.state.email;
       const password = this.state.password;
+      const name = this.state.name;
+      const phone = this.state.phone;
 
       const { user, error } = await supabase.auth.signUp({
         email: email,
@@ -65,14 +71,25 @@ class LoginScreen extends ValidationComponent {
 
       } else {
 
-       const { data, error:error_user} = await supabase
+        const { data:insert_user, error} = await supabase
           .from('user')
           .insert([{ 
                     auth_id: user.id,
                     email: email,
-                    tipe: 'member',
                     created_at: new Date(),
                     updated_at: new Date(),
+                  }])
+          console.log(insert_user)
+
+        let uid = insert_user[0].id;
+
+        const { data:data_member, error:error_member} = await supabase
+          .from('member')
+          .insert([{ 
+                    name: name,
+                    phone: phone,
+                    created_at: new Date(),
+                    uid: uid,
                   }])
 
        await AsyncStorage.setItem('@loginEmail', email);
@@ -132,7 +149,23 @@ class LoginScreen extends ValidationComponent {
             />
             {this.isFieldInError('password') && this.getErrorsInField('password').map(errorMessage => <HelperText type="error">{errorMessage}</HelperText>) }
 
+            <TextInput
+              label="Name"
+              value={this.state.name}
+              onChangeText={text => this.setState({name:text})}
+              style={ styleApp.TextInput }
+            />
+            {this.isFieldInError('name') && this.getErrorsInField('name').map(errorMessage => <HelperText type="error">{errorMessage}</HelperText>) }
+
+            <TextInput
+              label="Phone"
+              value={this.state.phone}
+              onChangeText={text => this.setState({phone:text})}
+              keyboardType={"numeric"}
+              style={ styleApp.TextInput }
+            />
           </View>
+          {this.isFieldInError('phone') && this.getErrorsInField('phone').map(errorMessage => <HelperText type="error">{errorMessage}</HelperText>) }
 
           <Button
               mode="contained"
