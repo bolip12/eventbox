@@ -24,6 +24,9 @@ import EventTaskMemberScreen from '../screen/member/EventTaskMemberScreen';
 import EventPositionScreen from '../screen/member/EventPositionScreen';
 import EventPosInsertScreen from '../screen/member/EventPosInsertScreen';
 import EventPosUpdateScreen from '../screen/member/EventPosUpdateScreen';
+
+import EventPosInsertParentScreen from '../screen/member/EventPosInsertParentScreen';
+
 import EventImageScreen from '../screen/member/EventImageScreen';
 
 import EventMonitorScreen from '../screen/member/EventMonitorScreen';
@@ -89,8 +92,7 @@ class LeaderNav extends Component {
                       <Stack.Screen name="EventPosInsertScreen" component={EventPosInsertScreen} options={{headerShown:false}} />
                       <Stack.Screen name="EventPosUpdateScreen" component={EventPosUpdateScreen} options={{headerShown:false}} />
                       <Stack.Screen name="EventImageScreen" component={EventImageScreen} options={{headerShown:false}} />
-                      
-                      
+                      <Stack.Screen name="EventPosInsertParentScreen" component={EventPosInsertParentScreen} options={{headerShown:false}} />
                       
                     </Stack.Navigator>
             )}

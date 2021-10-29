@@ -79,7 +79,6 @@ class LoginScreen extends ValidationComponent {
                     created_at: new Date(),
                     updated_at: new Date(),
                   }])
-          console.log(insert_user)
 
         let uid = insert_user[0].id;
 
@@ -89,6 +88,7 @@ class LoginScreen extends ValidationComponent {
                     name: name,
                     phone: phone,
                     created_at: new Date(),
+                    updated_at: new Date(),
                     uid: uid,
                   }])
 
@@ -107,7 +107,7 @@ class LoginScreen extends ValidationComponent {
 
       store.dispatch({
             type: 'LOADING',
-            payload: { isLoading:true }
+            payload: { isLoading:false }
         });
 
     }
@@ -164,14 +164,15 @@ class LoginScreen extends ValidationComponent {
               keyboardType={"numeric"}
               style={ styleApp.TextInput }
             />
-          </View>
           {this.isFieldInError('phone') && this.getErrorsInField('phone').map(errorMessage => <HelperText type="error">{errorMessage}</HelperText>) }
-
+          
+          </View>
+          
           <Button
-              mode="contained"
-              icon="login"
-              onPress={() => this.onSubmit()}
-              style={styleApp.Button}
+            mode="contained"
+            icon="login"
+            onPress={() => this.onSubmit()}
+            style={styleApp.Button}
           >
             Daftar
           </Button>

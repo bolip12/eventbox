@@ -65,6 +65,7 @@ class LoginScreen extends ValidationComponent {
         email: this.state.email,
         password: this.state.password,
       })
+      console.log(error)
 
       if(error != null) {
         showMessage({
